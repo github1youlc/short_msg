@@ -9,18 +9,24 @@
 #ifndef SHORT_MSG_CMD_H
 #define SHORT_MSG_CMD_H
 
-#include <string.h>
 #include <string>
 using std::string;
 
 
-// login cmd
-struct cmd_login{
+// register command
+struct cmd_register{
 	string user_id;
 	string password;
 	string phone;
 	string email;
 	string QQ;
+};
+
+
+// login command
+struct cmd_login{
+	string user_id;
+	string password;
 };
 
 
