@@ -23,7 +23,7 @@ using std::vector;
 		
 */
 /************************************************************************/
-map<const char *, MYSQL*> mysql_init_all(const char *host, const char* user, const * password, vector<const char *> dbs);
+map<const char *, MYSQL*> mysql_init_all(const char *host, const char* user, const char* password, vector<const char *> dbs);
 
 
 /************************************************************************/
@@ -31,7 +31,7 @@ map<const char *, MYSQL*> mysql_init_all(const char *host, const char* user, con
 	Todo: connect to a mysql database and return the connection
 */
 /************************************************************************/
-MYSQL * msql_connect_db(const char * host, const char * user, const * password, const * char dbs);
+MYSQL * msql_connect_db(const char * host, const char * user, const char* password, const char* dbs);
 
 /************************************************************************/
 /* 
