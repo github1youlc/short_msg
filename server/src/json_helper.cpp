@@ -33,10 +33,40 @@ string get_cmd_type(string json_str){
 	return cmd_type;
 }
 
+cmd_register * get_register_info(string json_str){
+	cmd_register * reg_info = new cmd_register;
+	std::stringstream ss(json_str);
+	ptree pt;
+	string cmd_type;
+	try
+	{
+		read_json(ss, pt);
+	}
+	catch (ptree_error &e)
+	{
+		printf("read json error, json_str: %s\n", json_str.c_str());
+		return NULL;
+	}
+
+	try{  
+		reg_info->user_id = pt.get<string>("username");
+		reg_info->password = pt.get<string>("password");
+		reg_info->email = pt.get<string>("email", "");
+		reg_info->phone = pt.get<string>("phone", "");
+		reg_info->QQ = pt.get<string>("QQ", "");
+	}  
+	catch (ptree_error & e)  
+	{
+		printf("get information error, json_str: %s\n", json_str.c_str());
+		return  NULL;
+	} 
+	return reg_info;
+}
+
 
 // parsing json text to get the login infomation
 cmd_login* get_login_info(string json_str){
-	cmd_login * login_info;
+	cmd_login * login_info = new cmd_login;
 	std::stringstream ss(json_str);
 	ptree pt;
 	string cmd_type;
