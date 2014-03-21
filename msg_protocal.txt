@@ -1,0 +1,7 @@
+Message format
+
+register
+"{"action: "register", "username":"user1", "password": "pwd1", "email": "xxx@xx.xx", "phone": "1234", "QQ": "1234"}"
+
+login 
+"{"action": "login", "username": "user1", "password": "pwd1"}"

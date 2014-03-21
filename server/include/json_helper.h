@@ -17,3 +17,4 @@ string get_cmd_type(string json_str);
 
 cmd_login* get_login_info(string json_str);
 
+cmd_register * get_register_info(string json_str);

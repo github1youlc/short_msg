@@ -17,7 +17,7 @@
 int main(int argc, char** argv) {
 	int sockfd;
 	struct sockaddr_in server_address;
-	char * data = "{this is a test}";
+	char * data = "{action: login, username: user3, passwrod: pwd3}";
 	int i = 0;
 	printf("connect number = %d\n", i + 1);
 	sockfd = createClientSocket("127.0.0.1", 6667);
@@ -28,7 +28,6 @@ int main(int argc, char** argv) {
 		printf("send() error\n");
 		close(sockfd);
 		return 1;
-
 		close(sockfd);
 	}
 	return 0;
