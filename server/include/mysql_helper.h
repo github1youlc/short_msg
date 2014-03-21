@@ -45,8 +45,17 @@ MYSQL * msql_connect_db(const char * host, const char * user, const char* passwo
 int insert_user_info(cmd_register * reg_info,MYSQL * users_db);
 
 
-int create_relation_table(string user_id, MYSQL * con);
 
+/************************************************************************/
+/* TODO: create user's relation table                                                                     */
+/************************************************************************/
+bool create_relation_table(string user_id, MYSQL * con);
+
+
+/************************************************************************/
+/* TODO: create user's msg table                                        */
+/************************************************************************/
+bool create_msg_table(string user_id, MYSQL * con);
 
 /************************************************************************/
 /* 

@@ -94,3 +94,38 @@ cmd_login* get_login_info(string json_str){
 	return login_info;
 }
  
+
+//Format json string from cmd_register struct, the returned string can be send through socket
+string format_register_json(cmd_register* reg_info){
+	string reg_json;
+	reg_json = reg_json + "{\"action\":\"register\"" + 
+		",\"username\":" + "\"" + reg_info->user_id + "\"" +
+		",\"password\":" + "\"" + reg_info->password+ "\"";
+
+	if (reg_info->email.size() != 0)
+	{
+		reg_json = reg_json + ",\"email\":" + "\"" + reg_info->email+ "\"";
+	}
+	if (reg_info ->phone.size() != 0)
+	{
+		reg_json = reg_json + ",\"phone\":" + "\"" + reg_info->phone+ "\"";
+	}
+	if (reg_info->QQ.size() != 0)
+	{
+		reg_json = reg_json + ",\"QQ\":" + "\"" + reg_info->QQ+ "\"";
+	}
+
+	reg_json = reg_json + "}";
+
+	return reg_json;
+}
+
+//Fromat json string from cmd_login
+string format_login_json(cmd_login * cmd_login){
+	string login_json;
+	login_json = login_json + "{\"action\":\"login\"" + 
+		",\"username\":" + "\"" + cmd_login->user_id + "\"" +
+		",\"password\":" + "\"" + cmd_login->password+ "\"}";
+	return login_json;
+}
+

@@ -173,25 +173,57 @@ int insert_user_info(cmd_register * reg_info, MYSQL * users_db){
 }
 
 
-/************************************************************************/
-/*
+/************************************************************************
 	Todo: create relation table for user
-*/
 /************************************************************************/
-int create_relation_table(string user_id, MYSQL * con){
-
-	return 1;
+bool create_relation_table(string user_id, MYSQL * con){
+	char create_relation_table_query[500];
+	sprintf(create_relation_table_query, "create table IF NOT EXISTS %s (user_id varchar(30) PRIMARY KEY, nick_name varchar(30), in_blacklist bit)", user_id.c_str());
+	 try{
+		 int mysql_status = mysql_query(con, create_relation_table_query));
+		 if (mysql_status)
+		 {
+			 throw((char *)(mysql_error(con)));
+		 }
+		 return true;
+	 }catch(FFError e){
+		printf("create relation table, error: %s\n", e.Label.c_str());
+		return false;
+	 }
+	return false;
 }
+
+/************************************************************************
+	TODO: create user's message table
+************************************************************************/
+bool create_msg_table(string user_id, MYSQL * con){
+	char create_msg_table_query[500];
+	sprintf(create_msg_table_query, "create table IF NOT EXISTS %s (msg_id varchar(50) PRIMARY KEY, peer_id varchar(30), data varchar(255), is_handled  bit, time datetime)", user_id.c_str());
+	try{
+		int mysql_status = mysql_query(con, create_msg_table_query));
+		if (mysql_status)
+		{
+			throw((char *)(mysql_error(con)));
+		}
+		return true;
+	}catch(FFError e){
+		printf("create message table, error: %s\n", e.Label.c_str());
+		return false;
+	}
+	return false;
+}
+
+
 
 /************************************************************************/
 /* 
 	Todo: user login, save login state to database
 	Return:
-		1 : login successfuly
+		1 : login successfully
 		0 : user_id and password not match
 		-1: mysql error
 	Note:
-		if the user does not logoff explicitly, he or she will be regarded as login
+		if the user does not log off explicitly, he or she will be regarded as login
 */
 /************************************************************************/
 int user_login(cmd_login * login_info, MYSQL * users_db)
