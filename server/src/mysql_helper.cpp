@@ -16,7 +16,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 /************************************************************************
 	TODO: mysql error handle class		
 ************************************************************************/
@@ -175,12 +174,12 @@ int insert_user_info(cmd_register * reg_info, MYSQL * users_db){
 
 /************************************************************************
 	Todo: create relation table for user
-/************************************************************************/
+************************************************************************/
 bool create_relation_table(string user_id, MYSQL * con){
 	char create_relation_table_query[500];
 	sprintf(create_relation_table_query, "create table IF NOT EXISTS %s (user_id varchar(30) PRIMARY KEY, nick_name varchar(30), in_blacklist bit)", user_id.c_str());
 	 try{
-		 int mysql_status = mysql_query(con, create_relation_table_query));
+		 int mysql_status = mysql_query(con, create_relation_table_query);
 		 if (mysql_status)
 		 {
 			 throw((char *)(mysql_error(con)));
@@ -200,7 +199,7 @@ bool create_msg_table(string user_id, MYSQL * con){
 	char create_msg_table_query[500];
 	sprintf(create_msg_table_query, "create table IF NOT EXISTS %s (msg_id varchar(50) PRIMARY KEY, peer_id varchar(30), data varchar(255), is_handled  bit, time datetime)", user_id.c_str());
 	try{
-		int mysql_status = mysql_query(con, create_msg_table_query));
+		int mysql_status = mysql_query(con, create_msg_table_query);
 		if (mysql_status)
 		{
 			throw((char *)(mysql_error(con)));

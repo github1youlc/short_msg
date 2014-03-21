@@ -1,15 +1,21 @@
-#ifdef SHORT_MSG_REGISTER_SERVER_CPP
+#ifndef SHORT_MSG_REGISTER_SERVER_CPP
 #define SHORT_MSG_REGISTER_SERVER_CPP
 
+#include<netinet/in.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<sys/types.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 
-#include "cmd.h";
+#include "cmd.h"
 #include "mysql_helper.h"
 
-// from server.c 
-exten "C" {
-	int createServerSocket(int port, int backlog);
-	int acceptClientSocket(int serverSocket);
-};
+
+extern "C" {
+#include "socketConnect.h"
+}
 
 #include <stdio.h>
 #include <unistd.h>
@@ -19,6 +25,8 @@ exten "C" {
 #include <string.h>
 #include <sys/stat.h>
 
+#include <string>
+using std::string;
 
 //define error exit
 #define ERR_EXIT(m) \
@@ -29,10 +37,14 @@ do\
 }\
 while (0);\
 
+
+pthread_mutex_t log_mutex;
+int log_fd;
+
 void *handle_register(void *fd)
 {
 	int client_sockfd;
-	int i,byte;
+	int byte;
 	char char_recv[100];//存放数据
 	client_sockfd=*((int*)fd);
 	for(;;)
@@ -42,25 +54,31 @@ void *handle_register(void *fd)
 			perror("recv");
 			pthread_exit(NULL);
 		}
-		if(strcmp(char_recv, "exit")==0)//接受到exit时，跳出循环
-			break;
-		printf("receive from client is %s/n",char_recv);//打印收到的数据
+		pthread_mutex_lock(&log_mutex);
+		write(log_fd, char_recv, (size_t)byte);//write data to log_dir
+		pthread_mutex_unlock(&log_mutex);
+		if(strcmp(char_recv, "exit")==0)//recv exit, client disconnects by itself
+			break;	
 	}
 	free(fd);
 	close(client_sockfd);
 	pthread_exit(NULL);
 }
 
-int main(void)
+int main()
 {
 	int server_fd;
 	unsigned int port = 0x8881;
 	int backlog = 40;
+
 	// create daemon process
-	if(daemon(0,0) == -1)
-		ERR_EXIT("daemon error");
-	int log_fd = open("/var/log/tencent/register.log",O_WRONLY|O_CREAT|O_APPEND,0644);
-	fd = createServerSocket(port, backlog);
+	//if(daemon(0,0) == -1)
+	//	ERR_EXIT("daemon error");
+
+	//initialize the log file mutex
+	pthread_mutex_init(&log_mutex, NULL);
+	log_fd = open("/var/log/tencent/register.log", O_WRONLY|O_CREAT|O_APPEND, 0644);
+	server_fd = createServerSocket(port, backlog);
 	while(1){
 		int * client_fd = (int *)malloc(sizeof(int));
 		if((*client_fd =acceptClientSocket(server_fd)) = -1)
@@ -71,30 +89,13 @@ int main(void)
 		pthread_t thread;
 		if(pthread_create(&thread, NULL, handle_register, client_fd)){
 			perror("pthread create");
-			send(client_fd, "-1",1, 0);
+			string err_str = "thread create error\n";
+			pthread_mutex_lock(&log_mutex);
+			write(log_fd, err_str.c_str(), err_str.size());
+			pthread_mutex_unlock(&log_mutex);
 			continue;
 		}
 	}
 	return 0;
 }
-
-bool register(cmd_register * reg_info){
-	// check whether the id is exist
-
-
-	// check validation of email
-
-	// after checking, handle the register:
-	//		1. insert info to user.users
-	//		2. create table of relation for the user in relation db
-	//		3. create table of msg for the user in msg db
-
-}
-
-
-int main()
-{
-
-}
-
 #endif

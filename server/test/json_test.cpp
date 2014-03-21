@@ -11,5 +11,8 @@ int main()
 	string test_login2 = format_register_json(reg_info);
 	printf("%s\n", test_login2.c_str());
 	cmd_register * reg_info2 = get_register_info(test_login2);
+
+	delete reg_info;
+	delete reg_info2;
 	return 0;
 }

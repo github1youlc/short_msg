@@ -68,7 +68,7 @@ bool create_msg_table(string user_id, MYSQL * con);
 		if the user does not logoff explicitly, he or she will be regarded as login
 */
 /************************************************************************/
-int user_login(cmd_login * login_info, MYSQL * users_db)
+int user_login(cmd_login * login_info, MYSQL * users_db);
 
 
 #endif
