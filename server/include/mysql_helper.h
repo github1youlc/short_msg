@@ -43,4 +43,23 @@ MYSQL * msql_connect_db(const char * host, const char * user, const char* passwo
 */
 /************************************************************************/
 int insert_user_info(cmd_register * reg_info,MYSQL * users_db);
+
+
+int create_relation_table(string user_id, MYSQL * con);
+
+
+/************************************************************************/
+/* 
+	Todo: user login, save login state to database
+	Return:
+		1 : login successfuly
+		0 : user_id and password not match
+		-1: mysql error
+	Note:
+		if the user does not logoff explicitly, he or she will be regarded as login
+*/
+/************************************************************************/
+int user_login(cmd_login * login_info, MYSQL * users_db)
+
+
 #endif

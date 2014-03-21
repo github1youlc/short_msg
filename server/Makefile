@@ -11,10 +11,13 @@ CPP_FILES := $(wildcard src/*.cpp)
 OBJ_FILES := $(addprefix obj/, $(notdir $(CPP_FILES:.cpp=.o)))
 REGISTER_DEPS = mysql_helpler.o register_handler.o
 MYSQL_DEPS = obj/mysql_helper.o obj/mysql_test.o
+JSON_DEPS = obj/json_helper.o obj/json_test.o
 
-debug : $(MYSQL_DEPS)
+debug : $(MYSQL_DEPS) $(JSON_DEPS)
 	$(CC) $(FLAGS) $(INCLUDEDIR)  -g $(MYSQL_DEPS) -o bin/debug/MYSQL_TEST $(MYSQL_FLAGS)
+	$(CC) $(FLAGS) $(INCLUDEDIR)  -g $(JSON_DEPS) -o bin/debug/JSON_TEST $(MYSQL_FLAGS)
 
+	
 
 release : $(MYSQL_DEPS)
 	$(CC) $(FLAGS) $(INCLUDEDIR) -O2 $(MYSQL_DEPS) -o bin/release/MYSQL_TEST $(MYSQL_FLAGS)
@@ -29,7 +32,7 @@ obj/%.o : src/%.cpp
 
 .PHONY : clean
 clean :
-	rm -f obj/debug/*.o; rm -f obj/release/*o; rm -f bin/* 
+	rm -f obj/*.o; rm -f obj/*o; rm -f bin/debug/*; rm -f bin/release/* 
 
 
 

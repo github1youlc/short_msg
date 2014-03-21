@@ -1,3 +1,14 @@
+/************************************************************************/
+/* 
+	Author: youlc
+	Email: ylcaa@foxmail.com
+	CreateDate: 2014/03/20
+	LastModify: 2014/03/21
+	TODO: All functions needed to handle mysql database
+*/
+/************************************************************************/
+
+
 #ifndef SHORT_MSG_MYSQL_HELPER_CPP
 #define SHORT_MSG_MYSQL_HELPER_CPP
 
@@ -6,7 +17,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+/************************************************************************
+	TODO: mysql error handle class		
+************************************************************************/
 class FFError
 {
 public:
@@ -161,6 +174,16 @@ int insert_user_info(cmd_register * reg_info, MYSQL * users_db){
 
 
 /************************************************************************/
+/*
+	Todo: create relation table for user
+*/
+/************************************************************************/
+int create_relation_table(string user_id, MYSQL * con){
+
+	return 1;
+}
+
+/************************************************************************/
 /* 
 	Todo: user login, save login state to database
 	Return:
@@ -193,7 +216,7 @@ int user_login(cmd_login * login_info, MYSQL * users_db)
 			throw FFError((char *)mysql_error(users_db));
 		}
 		mysql_res = mysql_store_result(users_db);
-		int row_count = mysql_num_rows(res);
+		int row_count = mysql_num_rows(mysql_res);
 		if (row_count == 1)
 		{
 			// store information that the user has logged in
@@ -209,7 +232,7 @@ int user_login(cmd_login * login_info, MYSQL * users_db)
 					mysql_free_result(mysql_res);
 				}
 				return 1;
-			}catch{FFError e}{
+			}catch(FFError e){
 				printf("store user login state, error: %s", e.Label.c_str());
 				if (mysql_res)
 				{
