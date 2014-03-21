@@ -7,6 +7,6 @@ int main(){
 	reg_info->user_id = "test1";
 	reg_info->password = "pass1";
 	reg_info->QQ = "12345";
-	insert_users_info(reg_info, con);
+	insert_user_info(reg_info, con);
 	return 0;
 }

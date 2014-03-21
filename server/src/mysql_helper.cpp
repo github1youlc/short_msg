@@ -88,7 +88,7 @@ MYSQL * msql_connect_db(const char * host, const char * user, const char * passw
 		2 : user information has not been stored in db, and the insert operation succeed
 */
 /************************************************************************/
-int insert_users_info(cmd_register * reg_info, MYSQL * users_db){
+int insert_user_info(cmd_register * reg_info, MYSQL * users_db){
 	MYSQL_RES * res;
 	int mysql_status = 0;
 
@@ -105,6 +105,11 @@ int insert_users_info(cmd_register * reg_info, MYSQL * users_db){
 		int row_count = mysql_num_rows(res);
 		if (row_count == 0)
 		{
+			if (res)
+			{
+				mysql_free_result(res);
+				res = NULL;
+			}
 			char insert_user_info_query[100];
 			sprintf(insert_user_info_query, "insert into users set user_id='%s', password='%s'", reg_info->user_id.c_str(), reg_info->password.c_str());
 			char tmp_opt[100];
@@ -122,11 +127,6 @@ int insert_users_info(cmd_register * reg_info, MYSQL * users_db){
 			{
 				sprintf(tmp_opt, ",QQ='%s'", reg_info->QQ.c_str());
 				strcat(insert_user_info_query, tmp_opt);
-			}
-			if (res)
-			{
-				mysql_free_result(res);
-				res = NULL;
 			}
 			try{
 				mysql_status = mysql_query(users_db, insert_user_info_query);
@@ -158,5 +158,75 @@ int insert_users_info(cmd_register * reg_info, MYSQL * users_db){
 	}
 	return 2;
 }
+
+
+/************************************************************************/
+/* 
+	Todo: user login, save login state to database
+	Return:
+		1 : login successfuly
+		0 : user_id and password not match
+		-1: mysql error
+	Note:
+		if the user does not logoff explicitly, he or she will be regarded as login
+*/
+/************************************************************************/
+int user_login(cmd_login * login_info, MYSQL * users_db)
+{
+	// the password or the user id cannot be empty
+	if (login_info->user_id.size() == 0 || login_info->password.size() == 0)
+	{
+		return false;
+	}
+
+	int mysql_status;
+	MYSQL_RES * mysql_res;
+
+	//check user infomation
+	char check_user_info_query[100];
+	sprintf(check_user_info_query, "select * from users where user_id='%s' and password='%s'", login_info->user_id.c_str(), login_info->password.c_str());
+
+	try{
+		mysql_status = mysql_query(users_db, check_user_info_query);
+		if (mysql_status)
+		{
+			throw FFError((char *)mysql_error(users_db));
+		}
+		mysql_res = mysql_store_result(users_db);
+		int row_count = mysql_num_rows(res);
+		if (row_count == 1)
+		{
+			// store information that the user has logged in
+			char store_user_login_state_query[100];
+			sprintf(store_user_login_state_query, "update users set is_login=1 where user_id='%s'", login_info->user_id.c_str());
+			try{
+				mysql_status = mysql_query(users_db, store_user_login_state_query);
+				if(mysql_status){
+					throw FFError((char *) mysql_error(users_db));
+				}
+				if (mysql_res)
+				{
+					mysql_free_result(mysql_res);
+				}
+				return 1;
+			}catch{FFError e}{
+				printf("store user login state, error: %s", e.Label.c_str());
+				if (mysql_res)
+				{
+					mysql_free_result(mysql_res);
+				}
+				return -1;
+			}
+		}else{
+			return 0;
+		}
+	}catch(FFError e){
+		printf("check user information, error: %s", e.Label.c_str());
+		return -1;
+	}
+	return 1;
+}
+
+
 
 #endif

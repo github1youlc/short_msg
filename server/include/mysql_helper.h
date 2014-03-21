@@ -42,5 +42,5 @@ MYSQL * msql_connect_db(const char * host, const char * user, const char* passwo
 		2 : user information has not been stored in db, and the insert operation succeed
 */
 /************************************************************************/
-int insert_users_info(cmd_register * reg_info,MYSQL * users_db);
+int insert_user_info(cmd_register * reg_info,MYSQL * users_db);
 #endif
