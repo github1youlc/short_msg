@@ -35,4 +35,25 @@ struct cmd_logoff{
 	string user_id;
 };
 
+// cmd used in message system
+// type 1: getMsg command
+// type 2: sendMsg command
+struct cmd_msg{
+	short type;
+};
+
+
+struct cmd_getMsg{
+	short type;
+	string userID;
+};
+
+struct cmd_sendMsg{
+	short type;
+	string fromUserId;
+	string toUserId;
+	string message;
+
+};
+
 #endif

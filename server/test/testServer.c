@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 		// single thread version
 		clientHandleThread(clientSocket);
 		// multi thread version
-		pthread_t thread;
+//		pthread_t thread;
 //		if (0
 //				!= (pthread_create(&thread, NULL, clientHandleThread,
 //						clientSocket))) {
