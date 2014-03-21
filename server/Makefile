@@ -4,15 +4,19 @@ INCLUDEDIR = -I ./include
 CPP_FILES := $(wildcard src/*.cpp)
 OBJ_FILES := $(addprefix obj/, $(notdir $(CPP_FILES:.cpp=.o)))
 REGISTER_DEPS = mysql_helpler.o register_handler.o
-MYSQL_DEPS = mysql_helper.o mysql_test.o
+MYSQL_DEPS = obj/debug/mysql_helper.o obj/debug/mysql_test.o
 TARGET = mysql_test
 
-all : $(MYSQL_DEPS)
-	$(cc) $(FLAGS) $(INCLUDEDIR) -o MSYQL_TEST 
+debug : $(MYSQL_DEPS)
+	$(cc) $(FLAGS) $(INCLUDEDIR)  -g $(MYSQL_DEPS) -o MSYQL_TEST 
 
 
-obj/%.o : src/%.cpp
-	$(CC) $(FLAGS) $(INCLUDEDIR) -c $< -o $@
+obj/debug/mysql_helper.o : src/mysql_helper.cpp
+	$(cc) $(FLAGS) $(INCLUDEDIR) -g $< -o $@ `mysql_config --cflags` `mysql_config --libs`
+
+
+obj/debug/%.o : src/%.cpp
+	$(CC) $(FLAGS) $(INCLUDEDIR) -g $< -o $@
 
 .PHONY : clean
 clean :
