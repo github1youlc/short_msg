@@ -1,15 +1,15 @@
 CC = g++
-FLAGS = -Wall -o
+FLAGS = -Wall
 INCLUDEDIR = -I ./include
 CPP_FILES := $(wildcard src/*.cpp)
 OBJ_FILES := $(addprefix obj/, $(notdir $(CPP_FILES:.cpp=.o)))
-REGISTER_DEPS = mysql_helpler.o register_handler.o 
-TARGET = register_handler login_handler
+REGISTER_DEPS = mysql_helpler.o register_handler.o
+MYSQL_DEPS = mysql_helper.o mysql_test.o
+TARGET = mysql_test
 
-all : $(TARGET)
+all : $(MYSQL_DEPS)
+	$(cc) $(FLAGS) $(INCLUDEDIR) -o MSYQL_TEST 
 
-register_handler : $(REGISTER_DEPS) 
-	$(cc) $(FLAGS) $(INCLUDEDIR) $< -o $@
 
 obj/%.o : src/%.cpp
 	$(CC) $(FLAGS) $(INCLUDEDIR) -c $< -o $@

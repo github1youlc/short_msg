@@ -23,6 +23,24 @@ using std::vector;
 		
 */
 /************************************************************************/
-map<const char *, MYSQL*> mysql_init(const char *host, const char* user, const * password, vector<const char *> dbs);
+map<const char *, MYSQL*> mysql_init_all(const char *host, const char* user, const * password, vector<const char *> dbs);
 
+
+/************************************************************************/
+/* 
+	Todo: connect to a mysql database and return the connection
+*/
+/************************************************************************/
+MYSQL * msql_connect_db(const char * host, const char * user, const * password, const * char dbs);
+
+/************************************************************************/
+/* 
+	return:
+		-1: mysql operation failed
+		0 : user information has not been stored in db, and the insert operation failed
+		1 : user information has been stored in db
+		2 : user information has not been stored in db, and the insert operation succeed
+*/
+/************************************************************************/
+int insert_users_info(cmd_register * reg_info,MYSQL * users_db);
 #endif
