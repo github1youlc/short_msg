@@ -15,6 +15,7 @@
 
 #include "json_helper.h"
 
+
 // get command type
 string get_cmd_type(string json_str){
 	std::stringstream ss(json_str);
