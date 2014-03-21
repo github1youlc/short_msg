@@ -1,7 +1,11 @@
-Message format
+#   Author: youlc
+#   Email: ylcaa@foxmail.com
+#   TODO: Message Protocal Definition
+#   Note: the format can be of any order and itmes in "[]" can not exist, when writing in program, REMEMBER to add \ before "
 
-register
-"{"action: "register", "username":"user1", "password": "pwd1", "email": "xxx@xx.xx", "phone": "1234", "QQ": "1234"}"
+1.register
+"{"action": "register", "username":"user1", "password": "pwd1"[, "email": "xxx@xx.xx"][, "phone": "1234"][, "QQ": "1234"]}"
 
-login 
+2.login 
 "{"action": "login", "username": "user1", "password": "pwd1"}"
+

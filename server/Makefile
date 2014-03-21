@@ -32,7 +32,7 @@ obj/%.o : src/%.cpp
 
 .PHONY : clean
 clean :
-	rm -f obj/debug/*.o; rm -f obj/release/*o; rm -f bin/* 
+	rm -f obj/*.o; rm -f obj/*o; rm -f bin/debug/*; rm -f bin/release/* 
 
 
 

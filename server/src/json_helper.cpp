@@ -11,6 +11,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/foreach.hpp>
+using namespace boost::property_tree;
+
 #include <stdio.h>
 
 #include "json_helper.h"
