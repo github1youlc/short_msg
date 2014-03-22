@@ -31,7 +31,7 @@ map<const char *, MYSQL*> mysql_init_all(const char *host, const char* user, con
 	Todo: connect to a mysql database and return the connection
 */
 /************************************************************************/
-MYSQL * msql_connect_db(const char * host, const char * user, const char* password, const char* dbs);
+MYSQL * mysql_connect_db(const char * host, const char * user, const char* password, const char* dbs);
 
 /************************************************************************/
 /* 
@@ -49,13 +49,13 @@ int insert_user_info(cmd_register * reg_info,MYSQL * users_db);
 /************************************************************************/
 /* TODO: create user's relation table                                                                     */
 /************************************************************************/
-bool create_relation_table(string user_id, MYSQL * con);
+int create_relation_table(string user_id, MYSQL * con);
 
 
 /************************************************************************/
 /* TODO: create user's msg table                                        */
 /************************************************************************/
-bool create_msg_table(string user_id, MYSQL * con);
+int create_msg_table(string user_id, MYSQL * con);
 
 /************************************************************************/
 /* 

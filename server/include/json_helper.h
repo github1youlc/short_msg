@@ -27,3 +27,5 @@ string format_register_json(cmd_register* reg_info);
 
 string format_login_json(cmd_login *login_info);
 
+
+string format_res_json(request_res * res);

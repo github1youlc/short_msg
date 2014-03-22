@@ -2,7 +2,7 @@
 #include "cmd.h"
 
 int main(){
-	MYSQL * con = msql_connect_db("127.0.0.1", "root", "123456", "user");
+	MYSQL * con = mysql_connect_db("127.0.0.1", "root", "123456", "user");
 	cmd_register * reg_info = new cmd_register;
 	reg_info->user_id = "test1";
 	reg_info->password = "pass1";

@@ -68,7 +68,7 @@ map<const char *, MYSQL*> mysql_init_all(const char *host, const char* user, con
 	Todo: connect to a mysql database and return the connection
 */
 /************************************************************************/
-MYSQL * msql_connect_db(const char * host, const char * user, const char * password, const char* dbs)
+MYSQL * mysql_connect_db(const char * host, const char * user, const char * password, const char* dbs)
 {
 	MYSQL * con = mysql_init(NULL);
 	MYSQL * con_res;
@@ -95,9 +95,8 @@ MYSQL * msql_connect_db(const char * host, const char * user, const char * passw
 /* 
 	return:
 		-1: mysql operation failed
-		0 : user information has not been stored in db, and the insert operation failed
-		1 : user information has been stored in db
-		2 : user information has not been stored in db, and the insert operation succeed
+		0 : user information has been stored in db
+		1 : user information has not been stored in db, and the insert operation succeed
 */
 /************************************************************************/
 int insert_user_info(cmd_register * reg_info, MYSQL * users_db){
@@ -146,16 +145,16 @@ int insert_user_info(cmd_register * reg_info, MYSQL * users_db){
 				{
 					throw FFError((char *)mysql_error(users_db));
 				}
-				return 2;
+				return 1;
 			}catch(FFError e){
 				printf("insert user information, error: %s", e.Label.c_str());
-				return 0;
+				return -1;
 			}
 
 		}else if(row_count == 1)
 		{
 			printf("user information already stored in db\n");
-			return 1;
+			return 0;
 		}
 	}catch(FFError e){
 		printf("check users info error:%s\n", e.Label.c_str());
@@ -175,7 +174,7 @@ int insert_user_info(cmd_register * reg_info, MYSQL * users_db){
 /************************************************************************
 	Todo: create relation table for user
 ************************************************************************/
-bool create_relation_table(string user_id, MYSQL * con){
+int create_relation_table(string user_id, MYSQL * con){
 	char create_relation_table_query[500];
 	sprintf(create_relation_table_query, "create table IF NOT EXISTS %s (user_id varchar(30) PRIMARY KEY, nick_name varchar(30), in_blacklist bit)", user_id.c_str());
 	 try{
@@ -184,18 +183,18 @@ bool create_relation_table(string user_id, MYSQL * con){
 		 {
 			 throw((char *)(mysql_error(con)));
 		 }
-		 return true;
+		 return 1;
 	 }catch(FFError e){
 		printf("create relation table, error: %s\n", e.Label.c_str());
-		return false;
+		return -1;
 	 }
-	return false;
+	return -1;
 }
 
 /************************************************************************
 	TODO: create user's message table
 ************************************************************************/
-bool create_msg_table(string user_id, MYSQL * con){
+int create_msg_table(string user_id, MYSQL * con){
 	char create_msg_table_query[500];
 	sprintf(create_msg_table_query, "create table IF NOT EXISTS %s (msg_id varchar(50) PRIMARY KEY, peer_id varchar(30), data varchar(255), is_handled  bit, time datetime)", user_id.c_str());
 	try{
@@ -204,12 +203,12 @@ bool create_msg_table(string user_id, MYSQL * con){
 		{
 			throw((char *)(mysql_error(con)));
 		}
-		return true;
+		return 1;
 	}catch(FFError e){
 		printf("create message table, error: %s\n", e.Label.c_str());
-		return false;
+		return -1;
 	}
-	return false;
+	return -1;
 }
 
 

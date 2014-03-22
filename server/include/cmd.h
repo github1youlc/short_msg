@@ -56,4 +56,15 @@ struct cmd_sendMsg{
 
 };
 
+struct request_res{
+	int result;
+	string msg;
+
+	request_res(int r, const char * m){
+		result = r;
+		msg = m;
+	}
+	request_res(){}
+};
+
 #endif

@@ -129,3 +129,14 @@ string format_login_json(cmd_login * cmd_login){
 	return login_json;
 }
 
+string format_res_json(request_res * res){
+	string res_json;
+	char int_tmp[20];
+	sprintf(int_tmp, "%d", res->result);
+	string result_str = int_tmp;
+	res_json = res_json + 
+		"{\"result:\":" + result_str +
+		",\"msg\":" + "\"" + res->msg+ "\"}";
+	return res_json;
+}
+
