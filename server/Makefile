@@ -16,7 +16,7 @@ REGISTER_SERVER_DEPS = obj/register_server.o obj/mysql_helper.o obj/json_helper.
 
 debug : $(MYSQL_DEPS) $(JSON_DEPS) $(REGISTER_SERVER_DEPS)
 	$(CC) $(FLAGS) $(INCLUDEDIR)  -g $(MYSQL_DEPS) -o bin/debug/MYSQL_TEST $(MYSQL_FLAGS)
-	$(CC) $(FLAGS) $(INCLUDEDIR)  -g $(JSON_DEPS) -o bin/debug/JSON_TEST
+	$(CC) $(FLAGS) $(INCLUDEDIR)  -g $(JSON_DEPS) -o bin/debug/JSON_TEST $(MYSQL_FLAGS)
 	$(CC) $(FLAGS) $(INCLUDEDIR)  -g $(REGISTER_SERVER_DEPS) -o bin/debug/REGISTER_SERVER $(MYSQL_FLAGS) 
 	
 
@@ -32,10 +32,10 @@ obj/mysql_test.o : test/mysql_test.cpp
 	$(CC) $(FLAGS) $(INCLUDEDIR) -c $< -o $@ $(MYSQL_FLAGS)
 
 obj/json_helper.o : src/json_helper.cpp
-	$(CC) $(FLAGS) $(INCLUDEDIR) -c $< -o $@
+	$(CC) $(FLAGS) $(INCLUDEDIR) -c $< -o $@ 
 
 obj/json_test.o : test/json_test.cpp
-	$(CC) $(FLAGS) $(INCLUDEDIR) -c $< -o $@
+	$(CC) $(FLAGS) $(INCLUDEDIR) -c $< -o $@ $(MYSQL_FLAGS)
 
 obj/register_server.o : src/register_server.cpp
 	$(CC) $(FLAGS) $(INCLUDEDIR) -c $< -o $@ $(MYSQL_FLAGS) -lpthread

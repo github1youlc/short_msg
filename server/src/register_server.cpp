@@ -135,7 +135,7 @@ int main()
 	con_msg = mysql_connect_db("127.0.0.1", "root", "123456", "msg");
 
 	int server_fd;
-	unsigned int port = 20000;
+	unsigned int port = 6000;
 	int backlog = 40;
 
 	// create daemon process

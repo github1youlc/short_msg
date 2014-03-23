@@ -93,6 +93,34 @@ cmd_login* get_login_info(string json_str){
 	} 
 	return login_info;
 }
+
+request_res * get_request_res(string json_str){
+	request_res * res = new request_res;
+
+	std::stringstream ss(json_str);
+	ptree pt;
+	string cmd_type;
+	try
+	{
+		read_json(ss, pt);
+	}
+	catch (ptree_error &e)
+	{
+		printf("read json error, json_str: %s\n", json_str.c_str());
+		return NULL;
+	}
+
+	try{  
+		res->result = pt.get<int>("result", 0);
+		res->msg = pt.get<string>("msg", "");
+	}  
+	catch (ptree_error & e)  
+	{  
+		return  NULL;
+	}
+	return res;
+
+}
  
 
 //Format json string from cmd_register struct, the returned string can be send through socket
