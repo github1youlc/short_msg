@@ -176,12 +176,16 @@ int insert_user_info(cmd_register * reg_info, MYSQL * users_db){
 ************************************************************************/
 int create_relation_table(string user_id, MYSQL * con){
 	char create_relation_table_query[500];
-	sprintf(create_relation_table_query, "create table IF NOT EXISTS %s (user_id varchar(30) PRIMARY KEY, nick_name varchar(30), in_blacklist bit)", user_id.c_str());
+	// the table name is: relation + user_id
+	string user_id2 = "relation_";
+	user_id2 = user_id2 + user_id;
+	sprintf(create_relation_table_query, "create table IF NOT EXISTS %s (user_id varchar(30) PRIMARY KEY, nick_name varchar(30), in_blacklist bit)", user_id2.c_str());
 	 try{
 		 int mysql_status = mysql_query(con, create_relation_table_query);
 		 if (mysql_status)
 		 {
-			 throw((char *)(mysql_error(con)));
+			 throw FFError((char *)(mysql_error(con)));
+			 return -1;
 		 }
 		 return 1;
 	 }catch(FFError e){
@@ -196,12 +200,15 @@ int create_relation_table(string user_id, MYSQL * con){
 ************************************************************************/
 int create_msg_table(string user_id, MYSQL * con){
 	char create_msg_table_query[500];
-	sprintf(create_msg_table_query, "create table IF NOT EXISTS %s (msg_id varchar(50) PRIMARY KEY, peer_id varchar(30), data varchar(255), is_handled  bit, time datetime)", user_id.c_str());
+	// the table name is: msg + user_id
+	string user_id2 = "msg_";
+	user_id2 = user_id2 + user_id;
+	sprintf(create_msg_table_query, "create table IF NOT EXISTS %s (msg_id int PRIMARY KEY auto_increment, peer_id varchar(30), data text, is_handled  tinyint(1), time datetime)", user_id.c_str());
 	try{
 		int mysql_status = mysql_query(con, create_msg_table_query);
 		if (mysql_status)
 		{
-			throw((char *)(mysql_error(con)));
+			throw FFError((char *)(mysql_error(con)));
 		}
 		return 1;
 	}catch(FFError e){

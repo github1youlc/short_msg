@@ -106,6 +106,7 @@ void *recv_data(void *fd)
 	cmd_register *reg_info;	
 	request_res *res;
 	string reg_json= get_cmd_from_sockfd(client_sockfd);
+	printf("cmd: %s\n", reg_json.c_str());
 	if (reg_json.size() == 0)
 	{
 		res = new request_res;
@@ -151,7 +152,8 @@ int main()
 	server_fd = createServerSocket(port, backlog);
 	if (server_fd == -1)
 	{
-		write(log_fd, "Error: cannot create server socket\n", 100);
+		printf("Error: create server socket\n");
+		return 0;
 	}
 	while(1){
 		int * client_fd = (int *)malloc(sizeof(int));

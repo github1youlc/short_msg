@@ -163,7 +163,7 @@ string format_res_json(request_res * res){
 	sprintf(int_tmp, "%d", res->result);
 	string result_str = int_tmp;
 	res_json = res_json + 
-		"{\"result:\":" + result_str +
+		"{\"result\":" + result_str +
 		",\"msg\":" + "\"" + res->msg+ "\"}";
 	return res_json;
 }

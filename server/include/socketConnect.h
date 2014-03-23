@@ -22,4 +22,9 @@ int acceptClientSocket(int serverSocket);
  * 创建一个客户端套接字，该套接字已经连接了，可以直接从中读取或发送信息。
  */
 int createClientSocket(char * ip, int port);
+
+
+/************************************************************************													client send command and receive response                    
+************************************************************************/
+int send_buff(char const *ip, int port,char const *buff,int len);
 #endif /* SOCKETCONNECT_H_ */
