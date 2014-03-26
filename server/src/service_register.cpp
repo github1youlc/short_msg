@@ -1,5 +1,5 @@
-#ifndef SHORT_MSG_REGISTER_SERVER_CPP
-#define SHORT_MSG_REGISTER_SERVER_CPP
+#ifndef SHORT_MSG_SERVICE_REGISTER_CPP
+#define SHORT_MSG_SERVICE_REGISTER_CPP
 
 #include<netinet/in.h>
 #include<sys/types.h>
@@ -18,7 +18,7 @@ using std::string;
 #include "mysql_helper.h"
 #include "common.h"
 #include "json_helper.h"
-
+#include "exten_def.h"
 
 extern "C" {
 #include "socketConnect.h"
@@ -64,6 +64,16 @@ request_res * handle_register(cmd_register * reg_info)
 		res->result = -1;
 		res->msg = "mysql operation failed";
 		return res;
+	}else if(tmp_res == 0){
+		res->result = 0;
+		res->msg = "Already Reigstered";
+		pthread_mutex_lock(&con_relation_mutex);
+		create_relation_table(reg_info->user_id, con_relation);
+		pthread_mutex_unlock(&con_relation_mutex);
+		pthread_mutex_lock(&con_msg_mutex);
+		create_msg_table(reg_info->user_id, con_msg);
+		pthread_mutex_unlock(&con_msg_mutex);
+		return res;
 	}
 	
 	// create user relation database
@@ -92,7 +102,7 @@ request_res * handle_register(cmd_register * reg_info)
 	}
 
 	res->result = 1;
-	res->msg = "Succeed";
+	res->msg = "Register Succeed";
 	return res;
 }
 
@@ -136,7 +146,6 @@ int main()
 	con_msg = mysql_connect_db("127.0.0.1", "root", "123456", "msg");
 
 	int server_fd;
-	unsigned int port = 6000;
 	int backlog = 40;
 
 	// create daemon process
@@ -147,9 +156,9 @@ int main()
 	pthread_mutex_init(&log_mutex, NULL);
 	pthread_mutex_init(&con_user_mutex, NULL);
 	pthread_mutex_init(&con_relation_mutex, NULL);
-	pthread_mutex_init(&con_relation_mutex, NULL);
+	pthread_mutex_init(&con_msg_mutex, NULL);
 	log_fd = open("/var/log/tencent/register.log", O_WRONLY|O_CREAT|O_APPEND, 0644);
-	server_fd = createServerSocket(port, backlog);
+	server_fd = createServerSocket(SERVICE_REGISTER_PORT, backlog);
 	if (server_fd == -1)
 	{
 		printf("Error: create server socket\n");
@@ -157,11 +166,13 @@ int main()
 	}
 	while(1){
 		int * client_fd = (int *)malloc(sizeof(int));
+		printf("warting for connection\n");
 		if((*client_fd =acceptClientSocket(server_fd)) == -1)
 		{
 			perror("socket accept");
 			continue;
 		}
+		printf("new connection :%d\n", *client_fd);
 		pthread_t thread;
 		if(pthread_create(&thread, NULL, recv_data, client_fd)){
 			perror("pthread create");

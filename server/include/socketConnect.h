@@ -26,5 +26,5 @@ int createClientSocket(char * ip, int port);
 
 /************************************************************************													client send command and receive response                    
 ************************************************************************/
-int send_buff(char const *ip, int port,char const *buff,int len);
+char * send_buff(char const *ip, int port,char const *buff,int len);
 #endif /* SOCKETCONNECT_H_ */

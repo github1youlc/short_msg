@@ -9,30 +9,38 @@
 #include "../include/socketConnect.h"
 
 
-#define MAXLINE 4096
+#include "exten_def.h"
 
 char * get_cmd_from_sockfd_c(int fd)
 {
-	char char_recv[1024];//store data
-	char tmp[100];
+	//char * result_recv;
+	char char_recv[MAX_BUFF_SIZE];//store data
+	char tmp[RECV_ONCE_BUFF_SIZE];
 	int l_count = 0; // count of '{'
 	int r_count = 0; // count of '}'
 	int zero_loop_count = 0; //count of not receiving data
-	bool first_recv = true;
+	int first_recv = 1;
 	int i;
+	int right_bracket_pos = 0;
 	while(true)
 	{
-		int byte_recv;
-		if((byte_recv=recv(fd,tmp,100,0))==-1)
+		int byte_recv = 0;
+		//printf("zero_count: %d\n", zero_loop_count);
+		if((byte_recv=recv(fd, tmp, RECV_ONCE_BUFF_SIZE, 0))==-1)
 		{
 			perror("recv");
 			return "";
 		}
 
+		
 		if (byte_recv == 0)
 		{
 			zero_loop_count ++;
 		}
+
+		int len = strlen(tmp);
+		//tmp[len] = '\0';
+		//printf("recv :%s len:%d zero_count:%d\n ", tmp, len, zero_loop_count);
 
 		if (zero_loop_count > 1000)
 		{
@@ -40,36 +48,45 @@ char * get_cmd_from_sockfd_c(int fd)
 			return "";
 		}
 
-		if (strlen(char_recv) > 500)
+		if (len > 4096)
 		{
 			printf("Not json command\n");
 			return "";
 		}
 
-		if (first_recv)
+		if (first_recv == 1)
 		{
 			strcpy(char_recv, tmp);
+			first_recv = 0;
 		}else{
 			strcat(char_recv, tmp);
 		}
-
-		for (i=0;i<byte_recv;i++)
+		//printf("char_recv: %s\n", char_recv);
+		for (i=0;i<len;i++)
 		{
+			//printf("i= %d,%c\n", i,tmp[i]);
 			if (tmp[i] == '{')
 			{
 				l_count++;
 			}
 			if (tmp[i] == '}')
 			{
-				r_count++;
+				right_bracket_pos = i;
+				r_count ++;
 			}
 		}
-
+		//printf("l_count: %d, r_count:%d", l_count, r_count);
 		if (l_count == r_count && l_count !=0)
 		{
+			//printf("here\n");
+			
+			//char_recv[++right_bracket_pos] = '\0';
 			break;
 		}
 	}
+	//printf("%s", char_recv);
+	//result_recv = new char [strlen(char_recv)];
+	//strcpy(result_recv, char_recv);
 	return char_recv;
 }
 
@@ -94,7 +111,7 @@ int createClientSocket(char * ip, int port) {
 	return clientSocket;
 }
 
-int send_buff(char const *ip, int port,char const *buff,int len)
+char * send_buff(char const *ip, int port,char const *buff,int len)
 {
 	int sockfd;
 	struct sockaddr_in server_address;
@@ -102,7 +119,7 @@ int send_buff(char const *ip, int port,char const *buff,int len)
 	if(-1==(sockfd=socket(AF_INET,SOCK_STREAM,0)))
 	{   
 		printf("socket() error\n");
-		return 0;
+		return "";
 	}   
 	memset(&server_address,0,sizeof(server_address));
 	server_address.sin_family=AF_INET;
@@ -110,25 +127,25 @@ int send_buff(char const *ip, int port,char const *buff,int len)
 	if(-1==inet_pton(AF_INET,ip,&(server_address.sin_addr)))
 	{   
 		printf("inet_pton() error for %s\n",ip);
-		return 0;
+		return "";
 	}   
 
 	if(connect(sockfd,(struct sockaddr*)&server_address,sizeof(server_address))<0)
 	{   
 		printf("connect error\n");
-		return 0;
+		return "";
 	}   
-	printf("socket:%d ,request to send: %s",sockfd, buff);
+	//printf("socket:%d ,request to send: %s\n",sockfd, buff);
 	if(send(sockfd,buff,len,0)<=0)
 	{   
 		printf("send_buff, send() error\n");
-		return 0;
+		return "";
 	}
-	printf("socket:%d ,request sended: %s",sockfd, buff);
+	//printf("socket:%d ,request sended: %s\n",sockfd, buff);
 	char * json_res = get_cmd_from_sockfd_c(sockfd);
-	printf("result: %s", json_res);
+	//printf("result: %s\n", json_res);
 	close(sockfd);
-	return 1;
+	return json_res;
 }
 
 

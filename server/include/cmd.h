@@ -9,8 +9,10 @@
 #ifndef SHORT_MSG_CMD_H
 #define SHORT_MSG_CMD_H
 
+#include <vector>
 #include <string>
 using std::string;
+using std::vector;
 
 
 // register command
@@ -35,21 +37,14 @@ struct cmd_logoff{
 	string user_id;
 };
 
-// cmd used in message system
-// type 1: getMsg command
-// type 2: sendMsg command
-struct cmd_msg{
-	short type;
-};
 
 
-struct cmd_getMsg{
-	short type;
+
+struct cmd_receiveMsg{
 	string userID;
 };
 
 struct cmd_sendMsg{
-	short type;
 	string fromUserId;
 	string toUserId;
 	string message;
@@ -67,4 +62,48 @@ struct request_res{
 	request_res(){}
 };
 
+struct msg{
+	string data;
+	string time;
+
+};
+
+struct user_msg{
+	string from;
+	bool is_read;
+	int count;
+	vector<msg *> msgs;
+};
+
+struct user_msgs{
+	int count_msg;
+	int count_person;
+	vector<struct user_msg *> user_msg;
+};
+
+struct cmd_addFriend{
+	string from;
+	string to;
+	string info;
+};
+
+
+struct cmd_confirmAdd {
+	string from;
+	string me;
+	int is_accept;
+};
+
+
+struct cmd_getFriends{
+	string me;
+};
+
+
+struct user_friends{
+	int count;
+	vector<string> friends;
+};
 #endif
+
+

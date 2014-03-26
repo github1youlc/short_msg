@@ -4,8 +4,28 @@
 #   Note: the format can be of any order and itmes in "[]" can not exist, when writing in program, REMEMBER to add \ before "
 
 1.register
-"{"action": "register", "username":"user1", "password": "pwd1"[, "email": "xxx@xx.xx"][, "phone": "1234"][, "QQ": "1234"]}"
+{"action": "register", "username":"user1", "password": "pwd1"[, "email": "xxx@xx.xx"][, "phone": "1234"][, "QQ": "1234"]}
 
 2.login 
-"{"action": "login", "username": "user1", "password": "pwd1"}"
+{"action": "login", "username": "user1", "password": "pwd1"}
+
+3.logff
+{"action": "logff", "username": "user1"}
+
+4.send message
+{"action":"sendMsg", "from": "user1", "to":"user2", "msg":"data"}
+
+5.receive message
+{"action":"receiveMsg", "id": "user1"}
+
+6.message definition
+
+
+7.add friend
+{"action":"addFriend", "from":"user1", "to":"user2", "info":"validation_info"}
+
+8.confirm add friend
+{"action":"confirmAdd", "from":"user2", "me":"user1"}
+
+
 
